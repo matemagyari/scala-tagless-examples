@@ -7,18 +7,19 @@ import scala.concurrent.Future
 object Main extends App {
 
   {
-    val service: PersonServiceImpl[Id] = new PersonServiceImpl(new InMemoryPersonRepository)
-    service.save(Person(0))
-    val p: Option[Person] = service.find(0)
+    val service: OrderServiceImpl[Id] =
+      new OrderServiceImpl(new InMemoryPaymentService, new InMemoryOrderRepository)
+    service.save(Order(0))
+    val p: Option[Order] = service.find(0)
   }
 
   {
     import cats.instances.future._
     import scala.concurrent.ExecutionContext.Implicits.global
-    val service: PersonServiceImpl[Future] =
-      new PersonServiceImpl(new AsynchPersonRepository)
+    val service: OrderServiceImpl[Future] =
+      new OrderServiceImpl(new AsynchPaymentService, new AsynchOrderRepository)
 
-    val p: Future[Option[Person]] = service.find(0)
+    val p: Future[Option[Order]] = service.find(0)
   }
 
 }
